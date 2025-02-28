@@ -17,5 +17,7 @@ class ZERGWAR_API UMyUserWidget : public UUserWidget
 
 public:
 	
-	void DrawBox(bool draw, FVector2d start, FVector2d end);	
+	void DrawBox(bool draw, FVector2d start, FVector2d end);
+
+	FVector ScreenToWorld(const APlayerController* controller, FVector2d point) const;
 };

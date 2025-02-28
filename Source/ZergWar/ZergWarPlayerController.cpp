@@ -14,6 +14,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "HUDDrawBox.h"
 #include "VectorUtil.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
 #include "Engine/LocalPlayer.h"
 #include "GameFramework/HUD.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -77,7 +78,7 @@ void AZergWarPlayerController::OnInputStarted()
 {
 	FollowTime = GetWorld()->GetTime().GetRealTimeSeconds();
 	
-	GetMousePosition(StartMousePosX, StartMousePosY);
+	StartMousePos = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 }
 
 void AZergWarPlayerController::OnCancel()
@@ -119,24 +120,22 @@ void AZergWarPlayerController::SelectMinion(ABasicMinion* Minion, bool selected)
 // Triggered every frame when the input is held down
 void AZergWarPlayerController::OnSetDestinationTriggered()
 {
-	if (GetWorld()->GetTime().GetRealTimeSeconds() - FollowTime >= 0.5f)
+	if (GetWorld()->GetTime().GetRealTimeSeconds() - FollowTime >= 0.1f)
 	{
-		GetMousePosition(MousePosX, MousePosY);
+		FVector2D MousePos = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetWorld());
 
 		AHUD* hud = GetHUD();
 
 		if (hud->Implements<UHUDDrawBox>())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("StartPosX : %f, StartPosY : %f"), StartMousePosX, StartMousePosY));
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, FString::Printf(TEXT("PosX : %f, PosY : %f"), MousePosX, MousePosY));
-			Cast<IHUDDrawBox>(hud)->DrawBox(true, FVector2d(StartMousePosX, StartMousePosY), FVector2d(MousePosX, MousePosY));
+			Cast<IHUDDrawBox>(hud)->DrawBox(true, StartMousePos, MousePos);
 		}
 	}
 }
 
 void AZergWarPlayerController::OnSetDestinationReleased()
 {
-	if (GetWorld()->GetTime().GetRealTimeSeconds() - FollowTime >= 0.5f)
+	if (GetWorld()->GetTime().GetRealTimeSeconds() - FollowTime >= 0.1f)
 	{
 		AHUD* hud = GetHUD();
 

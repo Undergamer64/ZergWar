@@ -88,9 +88,5 @@ private:
 	FVector CachedDestination;
 
 	float FollowTime; // For how long it has been pressed
-	float MousePosX;
-	float MousePosY;
-	
-	float StartMousePosX;
-	float StartMousePosY;
+	FVector2D StartMousePos;
 };
